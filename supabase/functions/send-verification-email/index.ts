@@ -91,7 +91,7 @@ serve(async (req) => {
               </div>
               <p><strong>Este código expira en 10 minutos.</strong></p>
               <p>Si no solicitaste este código, puedes ignorar este mensaje.</p>
-              <p>Saludos,<br>El equipo de Quiz Platform</p>
+              <p>Saludos,<br>El equipo de CRUFTYs Games</p>
             </div>
             <div class="footer">
               <p>Este es un mensaje automático, por favor no respondas a este email.</p>
@@ -113,14 +113,14 @@ serve(async (req) => {
       Si no solicitaste este código, puedes ignorar este mensaje.
       
       Saludos,
-      El equipo de Quiz Platform
+      El equipo de CRUFTYs Games
     `
 
     // Send email using SMTP
     const emailData = {
       from: FROM_EMAIL,
       to: email,
-      subject: 'Código de Verificación - Quiz Platform',
+      subject: 'Código de Verificación - CRUFTYs Games',
       text: emailText,
       html: emailHTML,
     }
@@ -139,7 +139,7 @@ serve(async (req) => {
         body: JSON.stringify({
           from: FROM_EMAIL,
           to: [email],
-          subject: 'Código de Verificación - Quiz Platform',
+          subject: 'Código de Verificación - CRUFTYs Games',
           html: emailHTML,
           text: emailText,
         }),
