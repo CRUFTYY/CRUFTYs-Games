@@ -51,7 +51,21 @@ export const CodeVerification: React.FC = () => {
         // Clear the verification code from session
         sessionStorage.removeItem(`verification_${state.pendingEmail}`);
       } else {
-        setError('Código de verificación incorrecto');
+        const storedData = sessionStorage.getItem(`verification_${state.pendingEmail}`);
+        if (!storedData) {
+          setError('El código ha expirado. Por favor solicita uno nuevo.');
+        } else {
+          try {
+            const { attempts } = JSON.parse(storedData);
+            if (attempts >= 3) {
+              setError('Demasiados intentos fallidos. Por favor solicita un nuevo código.');
+            } else {
+              setError(`Código incorrecto. Te quedan ${3 - attempts} intentos.`);
+            }
+          } catch {
+            setError('Código de verificación incorrecto');
+          }
+        }
         setCode(['', '', '', '', '', '']);
         inputRefs.current[0]?.focus();
       }

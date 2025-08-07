@@ -7,8 +7,7 @@ export const EmailVerification: React.FC = () => {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [verificationCode, setVerificationCode] = useState('');
-  const [showCode, setShowCode] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
   const { dispatch } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,55 +28,60 @@ export const EmailVerification: React.FC = () => {
 
     try {
       const code = await sendVerificationCode(email);
-      setVerificationCode(code);
-      setShowCode(true);
+      setEmailSent(true);
       dispatch({ type: 'SET_PENDING_EMAIL', payload: email });
       dispatch({ type: 'SET_VERIFICATION_STEP', payload: 'code' });
     } catch (err) {
-      setError('Error al enviar el código de verificación');
+      setError('Error al enviar el código de verificación. Por favor intenta nuevamente.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleContinue = () => {
-    dispatch({ type: 'SET_VERIFICATION_STEP', payload: 'code' });
-  };
-
-  if (showCode) {
+  if (emailSent) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4">
         <div className="max-w-md w-full">
           <div className="bg-white rounded-xl shadow-lg p-8">
             <div className="text-center mb-8">
               <div className="bg-green-100 p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <Mail className="h-8 w-8 text-green-600" />
+                <Send className="h-8 w-8 text-green-600" />
               </div>
-              <h1 className="text-2xl font-bold text-slate-900 mb-2">Código de Verificación</h1>
+              <h1 className="text-2xl font-bold text-slate-900 mb-2">¡Código Enviado!</h1>
               <p className="text-slate-600 mb-4">
-                Tu código de verificación es:
+                Hemos enviado un código de verificación de 6 dígitos a:
               </p>
-              <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6 mb-6">
-                <div className="text-3xl font-bold text-blue-600 tracking-wider">
-                  {verificationCode}
-                </div>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <p className="text-blue-800 font-medium">{email}</p>
               </div>
               <p className="text-sm text-slate-500 mb-6">
-                Usa este código en la siguiente pantalla para continuar
+                Revisa tu bandeja de entrada y carpeta de spam. El código expira en 10 minutos.
               </p>
             </div>
 
             <button
-              onClick={handleContinue}
+              onClick={() => dispatch({ type: 'SET_VERIFICATION_STEP', payload: 'code' })}
               className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
             >
-              Continuar con la verificación
+              Ingresar código de verificación
+            </button>
+            
+            <button
+              onClick={() => {
+                setEmailSent(false);
+                setEmail('');
+                setError('');
+              }}
+              className="w-full mt-3 text-slate-600 hover:text-slate-800 py-2 transition-colors duration-200"
+            >
+              Cambiar dirección de correo
             </button>
           </div>
         </div>
       </div>
     );
   }
+  
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="max-w-md w-full">
@@ -88,7 +92,7 @@ export const EmailVerification: React.FC = () => {
             </div>
             <h1 className="text-2xl font-bold text-slate-900 mb-2">Verificación de Acceso</h1>
             <p className="text-slate-600">
-              Ingresa tu dirección de Gmail autorizada para obtener tu código de verificación
+              Ingresa tu dirección de Gmail autorizada para recibir tu código de verificación
             </p>
           </div>
 
@@ -124,12 +128,12 @@ export const EmailVerification: React.FC = () => {
               {isLoading ? (
                 <>
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                  <span>Generando código...</span>
+                  <span>Enviando código...</span>
                 </>
               ) : (
                 <>
                   <Send className="h-5 w-5" />
-                  <span>Obtener código de verificación</span>
+                  <span>Enviar código de verificación</span>
                 </>
               )}
             </button>
@@ -137,7 +141,7 @@ export const EmailVerification: React.FC = () => {
 
           <div className="mt-8 text-center">
             <p className="text-xs text-slate-500">
-              El código se mostrará directamente en pantalla
+              Recibirás el código en tu bandeja de entrada de Gmail
             </p>
           </div>
         </div>
