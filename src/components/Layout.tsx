@@ -26,7 +26,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, showHeader = true }) =
                   <Shield className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-lg font-semibold text-slate-900">Quiz Platform</h1>
+                  <h1 className="text-lg font-semibold text-slate-900">CRUFTYs Games</h1>
                   {state.user?.isAdmin && (
                     <span className="text-xs text-blue-600 font-medium">Administrador</span>
                   )}
