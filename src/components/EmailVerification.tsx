@@ -7,6 +7,7 @@ export const EmailVerification: React.FC = () => {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [developmentCode, setDevelopmentCode] = useState('');
   const [emailSent, setEmailSent] = useState(false);
   const { dispatch } = useAuth();
 
@@ -28,6 +29,10 @@ export const EmailVerification: React.FC = () => {
 
     try {
       const code = await sendVerificationCode(email);
+      // In development mode, show the code directly
+      if (result.developmentMode && result.code) {
+        setDevelopmentCode(result.code);
+      }
       setEmailSent(true);
       dispatch({ type: 'SET_PENDING_EMAIL', payload: email });
       dispatch({ type: 'SET_VERIFICATION_STEP', payload: 'code' });
@@ -96,6 +101,31 @@ export const EmailVerification: React.FC = () => {
             </p>
           </div>
 
+          {error && (
+            <div className="flex items-center space-x-2 text-red-600 bg-red-50 p-3 rounded-lg">
+              <AlertCircle className="h-5 w-5 flex-shrink-0" />
+              <span className="text-sm">{error}</span>
+            </div>
+          )}
+
+          {developmentCode && (
+            <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <div className="flex items-center mb-2">
+                <div className="w-2 h-2 bg-yellow-400 rounded-full mr-2"></div>
+                <span className="text-sm font-medium text-yellow-800">Modo de Desarrollo</span>
+              </div>
+              <p className="text-sm text-yellow-700 mb-2">
+                Tu código de verificación es:
+              </p>
+              <div className="bg-white border-2 border-yellow-300 rounded-lg p-3 text-center">
+                <span className="text-2xl font-bold text-yellow-800 tracking-wider">{developmentCode}</span>
+              </div>
+              <p className="text-xs text-yellow-600 mt-2">
+                En producción, este código se enviaría por email.
+              </p>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">
@@ -112,13 +142,6 @@ export const EmailVerification: React.FC = () => {
                 disabled={isLoading}
               />
             </div>
-
-            {error && (
-              <div className="flex items-center space-x-2 text-red-600 bg-red-50 p-3 rounded-lg">
-                <AlertCircle className="h-5 w-5 flex-shrink-0" />
-                <span className="text-sm">{error}</span>
-              </div>
-            )}
 
             <button
               type="submit"
