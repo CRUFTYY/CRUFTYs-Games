@@ -8,6 +8,10 @@ const AUTHORIZED_EMAILS = [
   'micaelasf2007@gmail.com',
   'aylasdaiana06@gmail.com',
   'test1@gmail.com',
+  'test2@gmail.com',
+  'test3@gmail.com',
+  'test4@gmail.com',
+  'test5@gmail.com',
 ];
 
 const ADMIN_EMAIL = 'eliasmateoet24@gmail.com';
