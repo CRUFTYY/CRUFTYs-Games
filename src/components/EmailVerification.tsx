@@ -134,7 +134,7 @@ export const EmailVerification: React.FC = () => {
 
           <div className="mt-8 text-center">
             <p className="text-xs text-slate-500">
-              Recibirás el código en tu bandeja de entrada de Gmail
+              Fijate de ser rápido, porque el código es mostrado rápido, copialo y pegalo, sino reingresá
             </p>
           </div>
         </div>
