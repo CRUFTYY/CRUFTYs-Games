@@ -52,7 +52,7 @@ export const EmailVerification: React.FC = () => {
             <div className="bg-blue-100 p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
               <Mail className="h-8 w-8 text-blue-600" />
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 mb-2">Verificación de Acceso</h1>
+            <h1 className="text-2xl font-bold text-slate-900 mb-2">Verificate</h1>
             <p className="text-slate-600">
               Ingresa tu dirección de Gmail autorizada para recibir tu código de verificación
             </p>
