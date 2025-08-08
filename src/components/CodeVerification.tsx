@@ -142,7 +142,7 @@ export const CodeVerification: React.FC = () => {
 
           <div className="mt-8 text-center">
             <p className="text-xs text-slate-500">
-              Revisa tu bandeja de entrada y carpeta de spam
+            
             </p>
           </div>
         </div>
