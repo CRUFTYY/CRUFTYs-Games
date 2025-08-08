@@ -93,7 +93,7 @@ export const EmailVerification: React.FC = () => {
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="tu.email@gmail.com"
+                placeholder="Maten_a_los_pelados@gmail.com"
                 className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
                 required
                 disabled={isLoading}
