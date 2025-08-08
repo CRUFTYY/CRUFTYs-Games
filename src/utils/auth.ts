@@ -35,40 +35,8 @@ export const sendVerificationCode = async (email: string): Promise<string> => {
   };
   sessionStorage.setItem(`verification_${email}`, JSON.stringify(codeData));
   
-  try {
-    // Call Supabase Edge Function to send email
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-    const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-    
-    if (!supabaseUrl || !supabaseKey) {
-      throw new Error('Supabase configuration missing');
-    }
-
-    const response = await fetch(`${supabaseUrl}/functions/v1/send-verification-email`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${supabaseKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email,
-        code
-      }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to send verification email');
-    }
-
-    const result = await response.json();
-    console.log('Verification email sent successfully:', result);
-    
-  } catch (error) {
-    console.error('Error sending verification email:', error);
-    // Don't throw error - fallback to showing code in console for development
-    console.log(`DEVELOPMENT: Verification code for ${email}: ${code}`);
-  }
+  // Para desarrollo/demo, simplemente logueamos el código
+  console.log(`CÓDIGO DE VERIFICACIÓN para ${email}: ${code}`);
   
   return code;
 };

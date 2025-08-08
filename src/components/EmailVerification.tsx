@@ -29,10 +29,8 @@ export const EmailVerification: React.FC = () => {
 
     try {
       const code = await sendVerificationCode(email);
-      // In development mode, show the code directly
-      if (result.developmentMode && result.code) {
-        setDevelopmentCode(result.code);
-      }
+      // Mostrar el código directamente en modo desarrollo
+      setDevelopmentCode(code);
       setEmailSent(true);
       dispatch({ type: 'SET_PENDING_EMAIL', payload: email });
       dispatch({ type: 'SET_VERIFICATION_STEP', payload: 'code' });
