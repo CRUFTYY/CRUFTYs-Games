@@ -1,7 +1,7 @@
 import { QuizQuestion, QuizResult, QuizConfig } from '../types';
 
 export const sampleQuestions: QuizQuestion[] = [
-  {
+    {
     id: '1',
     question: '¿Cuál es mi filósofo existencialista favorito?',
     options: ['Friedrich Nietzsche', 'Albert Camus', 'Jean-Paul Sartre', 'Franz Kafka'],
@@ -97,6 +97,62 @@ export const sampleQuestions: QuizQuestion[] = [
     question: '¿De cuál de los siguientes artistas no tengo vinilo?',
     options: ['The Smiths', 'Michael Jackson', 'Electric Light Orchestra', 'Osvaldo Pugliese', 'The Doors', 'Bob Dylan'],
     correctAnswer: 5,
+    category: 'Personal'
+  },
+  {
+    id: '15',
+    question: '¿Cuál es mi serie favorita?',
+    options: ['Dexter', 'Suits', 'The Flash', 'Arcane', 'You', 'Casados con hijos'],
+    correctAnswer: 2,
+    category: 'Personal'
+  },
+  {
+    id: '16',
+    question: '¿En qué día cumplo años?',
+    options: ['3 - marzo', '15 - marzo', '21 - marzo', '22 - marzo', '9 - marzo', '28 - marzo'],
+    correctAnswer: 3,
+    category: 'Personal'
+  },
+  {
+    id: '17',
+    question: '¿Qué prefiero, frío o calor?',
+    options: ['Frío', 'Calor'],
+    correctAnswer: 0,
+    category: 'Personal'
+  },
+  {
+    id: '18',
+    question: '¿Cuál es mi comida favorita?',
+    options: ['Pizza de Jamón y Morrón a la piedra', 'Pizza de Jamón y Morrón', 'Canelones', 'Ñoquis', 'Agnolotis', 'Milanesa con puré', '23g de clonazepam'],
+    correctAnswer: 2,
+    category: 'Personal'
+  },
+  {
+    id: '19',
+    question: '¿Cuál es mi alfajor favorito?',
+    options: ['Jorgelin blanco', 'Rasta', '70% cacao - Havanna', 'Gula', 'Mini torta clásica - Aguila', 'Mini torta blanco - Aguila', 'Capitán del Espacio'],
+    correctAnswer: 2,
+    category: 'Personal'
+  },
+  {
+    id: '20',
+    question: '¿Cuál es mi película argentina favorita?',
+    options: ['El Secreto de Sus Ojos', 'Nueve Reinas', 'El Hombre Mirando al Sudeste', 'El Robo del Siglo', 'La Historia Oficial', 'El Clan', 'Relatos Salvajes'],
+    correctAnswer: 2,
+    category: 'Personal'
+  },
+  {
+    id: '21',
+    question: '¿Cuál es mi película animada favorita?',
+    options: ['Soul', 'Megamente', 'El Secreto de la Vida', 'Frozen', 'Emoji Movie'],
+    correctAnswer: 2,
+    category: 'Personal'
+  },
+  {
+    id: '22',
+    question: '¿Cuál de estas películas está en mi top 10 personal?',
+    options: ['Zoolander', 'Before Sunrise', 'Dune', 'The Shining', 'Dead Poets Society'],
+    correctAnswer: 4,
     category: 'Personal'
   }
 ];
