@@ -142,7 +142,7 @@ export const CodeVerification: React.FC = () => {
 
           <div className="mt-8 text-center">
             <p className="text-xs text-slate-500">
-            
+              Tenés que poner el código que te mostré antes
             </p>
           </div>
         </div>
