@@ -115,7 +115,7 @@ export const EmailVerification: React.FC = () => {
               ) : (
                 <>
                   <Send className="h-5 w-5" />
-                  <span>Enviar código de verificación</span>
+                  <span>Enviar código</span>
                 </>
               )}
             </button>
