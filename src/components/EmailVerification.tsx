@@ -8,7 +8,6 @@ export const EmailVerification: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [developmentCode, setDevelopmentCode] = useState('');
-  const [emailSent, setEmailSent] = useState(false);
   const { dispatch } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,62 +28,22 @@ export const EmailVerification: React.FC = () => {
 
     try {
       const code = await sendVerificationCode(email);
-      // Mostrar el código directamente en modo desarrollo
+      console.log(`Código generado: ${code}`);
       setDevelopmentCode(code);
-      setEmailSent(true);
       dispatch({ type: 'SET_PENDING_EMAIL', payload: email });
-      dispatch({ type: 'SET_VERIFICATION_STEP', payload: 'code' });
+      
+      // Pequeño delay para que el usuario vea el código antes de cambiar de pantalla
+      setTimeout(() => {
+        dispatch({ type: 'SET_VERIFICATION_STEP', payload: 'code' });
+      }, 2000);
     } catch (err) {
+      console.error('Error:', err);
       setError('Error al enviar el código de verificación. Por favor intenta nuevamente.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  if (emailSent) {
-    return (
-      <div className="min-h-screen flex items-center justify-center px-4">
-        <div className="max-w-md w-full">
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <div className="text-center mb-8">
-              <div className="bg-green-100 p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <Send className="h-8 w-8 text-green-600" />
-              </div>
-              <h1 className="text-2xl font-bold text-slate-900 mb-2">¡Código Enviado!</h1>
-              <p className="text-slate-600 mb-4">
-                Hemos enviado un código de verificación de 6 dígitos a:
-              </p>
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                <p className="text-blue-800 font-medium">{email}</p>
-              </div>
-              <p className="text-sm text-slate-500 mb-6">
-                Revisa tu bandeja de entrada y carpeta de spam. El código expira en 10 minutos.
-              </p>
-            </div>
-
-            <button
-              onClick={() => dispatch({ type: 'SET_VERIFICATION_STEP', payload: 'code' })}
-              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
-            >
-              Ingresar código de verificación
-            </button>
-            
-            <button
-              onClick={() => {
-                setEmailSent(false);
-                setEmail('');
-                setError('');
-              }}
-              className="w-full mt-3 text-slate-600 hover:text-slate-800 py-2 transition-colors duration-200"
-            >
-              Cambiar dirección de correo
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-  
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="max-w-md w-full">
@@ -110,7 +69,7 @@ export const EmailVerification: React.FC = () => {
             <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
               <div className="flex items-center mb-2">
                 <div className="w-2 h-2 bg-yellow-400 rounded-full mr-2"></div>
-                <span className="text-sm font-medium text-yellow-800">Modo de Desarrollo</span>
+                <span className="text-sm font-medium text-yellow-800">¡Código Generado!</span>
               </div>
               <p className="text-sm text-yellow-700 mb-2">
                 Tu código de verificación es:
@@ -119,7 +78,7 @@ export const EmailVerification: React.FC = () => {
                 <span className="text-2xl font-bold text-yellow-800 tracking-wider">{developmentCode}</span>
               </div>
               <p className="text-xs text-yellow-600 mt-2">
-                En producción, este código se enviaría por email.
+                Usa este código en la siguiente pantalla. Expira en 10 minutos.
               </p>
             </div>
           )}
@@ -143,7 +102,7 @@ export const EmailVerification: React.FC = () => {
 
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || developmentCode !== ''}
               className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
             >
               {isLoading ? (
@@ -151,6 +110,8 @@ export const EmailVerification: React.FC = () => {
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                   <span>Enviando código...</span>
                 </>
+              ) : developmentCode ? (
+                <span>Redirigiendo automáticamente...</span>
               ) : (
                 <>
                   <Send className="h-5 w-5" />
@@ -159,6 +120,17 @@ export const EmailVerification: React.FC = () => {
               )}
             </button>
           </form>
+
+          {developmentCode && (
+            <div className="mt-4 text-center">
+              <button
+                onClick={() => dispatch({ type: 'SET_VERIFICATION_STEP', payload: 'code' })}
+                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              >
+                Ir a verificación de código ahora →
+              </button>
+            </div>
+          )}
 
           <div className="mt-8 text-center">
             <p className="text-xs text-slate-500">
