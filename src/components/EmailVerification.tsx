@@ -86,7 +86,7 @@ export const EmailVerification: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">
-                Dirección de Gmail
+                Gmail
               </label>
               <input
                 type="email"
