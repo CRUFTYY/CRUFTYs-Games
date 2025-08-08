@@ -136,7 +136,7 @@ export const CodeVerification: React.FC = () => {
               className="w-full flex items-center justify-center space-x-2 text-slate-600 hover:text-slate-800 py-2 transition-colors duration-200"
             >
               <ArrowLeft className="h-4 w-4" />
-              <span>Cambiar dirección de correo</span>
+              <span>Cambiar Gmail/volver a ingresar</span>
             </button>
           </div>
 
