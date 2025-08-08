@@ -61,7 +61,7 @@ export const Quiz: React.FC = () => {
             <div className="bg-green-100 p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
               <Trophy className="h-8 w-8 text-green-600" />
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 mb-2">¡Cuestionario completado!</h1>
+            <h1 className="text-2xl font-bold text-slate-900 mb-2">Completaste el formulario, seguro no era lo que esperabas.</h1>
             <p className="text-slate-600 mb-6">
               Has terminado el cuestionario exitosamente
             </p>
