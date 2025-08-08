@@ -99,7 +99,7 @@ export const AdminDashboard: React.FC = () => {
                   <div className="ml-4">
                     <p className="text-sm font-medium text-slate-600">Promedio General</p>
                     <p className="text-2xl font-bold text-slate-900">
-                      {stats.averageScore.toFixed(1)}/5
+                      {stats.averageScore.toFixed(1)}/10
                     </p>
                   </div>
                 </div>
@@ -174,7 +174,7 @@ export const AdminDashboard: React.FC = () => {
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
-                            {user.score}/5
+                            {user.score}/10
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
@@ -245,7 +245,7 @@ export const AdminDashboard: React.FC = () => {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
-                        {user.score}/5
+                        {user.score}/10
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
