@@ -1,41 +1,7 @@
 import { QuizQuestion, QuizResult, QuizConfig } from '../types';
 
 export const sampleQuestions: QuizQuestion[] = [
-  {
-    id: '1',
-    question: '¿Cuál es la capital de Francia?',
-    options: ['Londres', 'Berlín', 'París', 'Madrid'],
-    correctAnswer: 2,
-    category: 'Geografía'
-  },
-  {
-    id: '2',
-    question: '¿En qué año llegó el hombre a la Luna?',
-    options: ['1967', '1969', '1971', '1973'],
-    correctAnswer: 1,
-    category: 'Historia'
-  },
-  {
-    id: '3',
-    question: '¿Cuál es el elemento químico con símbolo "O"?',
-    options: ['Oro', 'Oxígeno', 'Osmio', 'Óxido'],
-    correctAnswer: 1,
-    category: 'Ciencias'
-  },
-  {
-    id: '4',
-    question: '¿Quién escribió "Don Quijote de la Mancha"?',
-    options: ['García Lorca', 'Miguel de Cervantes', 'Lope de Vega', 'Calderón de la Barca'],
-    correctAnswer: 1,
-    category: 'Literatura'
-  },
-  {
-    id: '5',
-    question: '¿Cuál es el resultado de 15 × 8?',
-    options: ['120', '125', '130', '115'],
-    correctAnswer: 0,
-    category: 'Matemáticas'
-  }
+  
 ];
 
 export const getQuizConfig = (): QuizConfig => {
@@ -55,7 +21,7 @@ export const getQuizConfig = (): QuizConfig => {
     startDate: new Date('2025-01-01T09:00:00'),
     endDate: new Date('2025-12-31T23:59:59'),
     questions: sampleQuestions,
-    title: 'Cuestionario de Conocimientos Generales'
+    title: 'CRUFTYs Games'
   };
   
   localStorage.setItem('quizConfig', JSON.stringify(defaultConfig));
