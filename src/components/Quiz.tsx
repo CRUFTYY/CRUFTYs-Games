@@ -51,6 +51,7 @@ export const Quiz: React.FC = () => {
 
   if (quizCompleted) {
     const score = answers.filter(answer => answer.isCorrect).length;
+    const scoreOutOf10 = Math.round((score / questions.length) * 10 * 10) / 10; // Score out of 10 with 1 decimal
     const percentage = Math.round((score / questions.length) * 100);
 
     return (
@@ -66,8 +67,11 @@ export const Quiz: React.FC = () => {
             </p>
             
             <div className="bg-slate-50 rounded-lg p-6 mb-6">
-              <div className="text-3xl font-bold text-slate-900 mb-2">{score}/{questions.length}</div>
+              <div className="text-3xl font-bold text-slate-900 mb-2">{scoreOutOf10}/10</div>
               <div className="text-lg text-slate-600 mb-2">{percentage}% correcto</div>
+              <div className="text-sm text-slate-500 mb-2">
+                Respuestas correctas: {score}/{questions.length}
+              </div>
               <div className="text-sm text-slate-500">
                 Tiempo: {Math.floor(timeSpent / 60)}m {timeSpent % 60}s
               </div>

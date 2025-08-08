@@ -18,8 +18,8 @@ export const NameEntry: React.FC = () => {
       return;
     }
 
-    // Check if user has already completed the quiz (unless admin)
-    if (!isAdmin(state.pendingEmail) && hasUserCompletedQuiz(state.pendingEmail)) {
+    // Check if user has already completed the quiz (including admin)
+    if (hasUserCompletedQuiz(state.pendingEmail)) {
       setError('Ya has completado este cuestionario anteriormente');
       return;
     }

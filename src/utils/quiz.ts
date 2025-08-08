@@ -163,7 +163,7 @@ export const calculateQuizStats = () => {
   }
 
   const totalSubmissions = results.length;
-  const averageScore = results.reduce((sum, result) => sum + result.score, 0) / totalSubmissions;
+  const averageScore = results.reduce((sum, result) => sum + (result.score / result.totalQuestions * 10), 0) / totalSubmissions;
   
   // Question statistics
   const questionStats = sampleQuestions.map(question => {
@@ -186,7 +186,7 @@ export const calculateQuizStats = () => {
   const userStats = results.map(result => ({
     userEmail: result.userEmail,
     userName: result.userName,
-    score: result.score,
+    score: Math.round((result.score / result.totalQuestions) * 10 * 10) / 10, // Score out of 10 with 1 decimal
     percentage: (result.score / result.totalQuestions) * 100,
     timeSpent: result.timeSpent,
     completedAt: result.completedAt
@@ -195,7 +195,7 @@ export const calculateQuizStats = () => {
   return {
     totalSubmissions,
     averageScore,
-    completionRate: (averageScore / sampleQuestions.length) * 100,
+    completionRate: (averageScore / 10) * 100,
     questionStats,
     userStats
   };
