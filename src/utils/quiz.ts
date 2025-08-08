@@ -1,7 +1,104 @@
 import { QuizQuestion, QuizResult, QuizConfig } from '../types';
 
 export const sampleQuestions: QuizQuestion[] = [
-  
+  {
+    id: '1',
+    question: '¿Cuál es mi filósofo existencialista favorito?',
+    options: ['Friedrich Nietzsche', 'Albert Camus', 'Jean-Paul Sartre', 'Franz Kafka'],
+    correctAnswer: 1,
+    category: 'Personal'
+  },
+  {
+    id: '2',
+    question: '¿Cuál es mi libro favorito?',
+    options: ['La Náusea', 'El Extranjero', 'Crimen y Castigo', 'El Retrato de Dorian Gray'],
+    correctAnswer: 1,
+    category: 'Personal'
+  },
+  {
+    id: '3',
+    question: '¿Cuál es el libro que más veces leí?',
+    options: ['La Peste', 'El Extranjero (3 veces)', 'El Proceso', 'El Principito'],
+    correctAnswer: 1,
+    category: 'Personal'
+  },
+  {
+    id: '4',
+    question: '¿Cuáles son mis colores favoritos?',
+    options: ['Verde', 'Naranja', 'Rosa y Azul', 'Amarillo'],
+    correctAnswer: 2,
+    category: 'Personal'
+  },
+  {
+    id: '5',
+    question: '¿Cuál es mi canción favorita?',
+    options: ['Lover', 'Shake It Off', 'Con La Misma Moneda', 'My Tears Ricochet', 'Fake Tales Of San Francisco'],
+    correctAnswer: 3,
+    category: 'Personal'
+  },
+  {
+    id: '6',
+    question: '¿Cuál es mi álbum favorito?',
+    options: ['DOGVIOLET - LAUREL', 'Folklore - Taylor Swift', 'eternal sunshine - Ariana Grande', 'Trench - twenty one pilots'],
+    correctAnswer: 1,
+    category: 'Personal'
+  },
+  {
+    id: '7',
+    question: '¿Cuál es mi álbum favorito de Fito Páez?',
+    options: ['Ciudad de pobres corazones', 'Del 63', 'La La La', 'Giros'],
+    correctAnswer: 1,
+    category: 'Personal'
+  },
+  {
+    id: '8',
+    question: '¿Cuántas veces vi The Flash hasta hoy?',
+    options: ['5 veces', '2 veces', '6 veces', 'Una vez', 'No la terminé nunca'],
+    correctAnswer: 2,
+    category: 'Personal'
+  },
+  {
+    id: '9',
+    question: '¿Cuál es mi película favorita?',
+    options: ['Eternal Sunshine of the Spotless Mind', 'The Matrix (1999)', 'Black Swan', 'The Truman Show', 'Edward Scissorhands'],
+    correctAnswer: 2,
+    category: 'Personal'
+  },
+  {
+    id: '10',
+    question: '¿Cuál es mi juego favorito?',
+    options: ['Balatro', 'Detroit Become Human', 'GTA', 'Counter-Strike 2', 'F1 2020', 'Red Dead Redemption 2'],
+    correctAnswer: 1,
+    category: 'Personal'
+  },
+  {
+    id: '11',
+    question: '¿Cuál es mi corriente filosófica favorita?',
+    options: ['Existencialismo', 'Nihilismo', 'Utilitarismo', 'Positivismo', 'Escepticismo'],
+    correctAnswer: 0,
+    category: 'Personal'
+  },
+  {
+    id: '12',
+    question: '¿Quién es mi artista de reggae favorito?',
+    options: ['Bob Marley', 'Los Cafres', 'Gondwana', 'Los Pericos', 'Dread Mar I'],
+    correctAnswer: 4,
+    category: 'Personal'
+  },
+  {
+    id: '13',
+    question: '¿Sería capaz de asesinar a alguien a sangre fría?',
+    options: ['Sí', 'No'],
+    correctAnswer: 1,
+    category: 'Personal'
+  },
+  {
+    id: '14',
+    question: '¿De cuál de los siguientes artistas no tengo vinilo?',
+    options: ['The Smiths', 'Michael Jackson', 'Electric Light Orchestra', 'Osvaldo Pugliese', 'The Doors', 'Bob Dylan'],
+    correctAnswer: 5,
+    category: 'Personal'
+  }
 ];
 
 export const getQuizConfig = (): QuizConfig => {
