@@ -10,14 +10,15 @@ export interface QuizQuestion {
   id: string;
   question: string;
   options: string[];
-  correctAnswer: number;
+  correctAnswers: number[]; // Changed to support multiple correct answers
   category?: string;
 }
 
 export interface QuizAnswer {
   questionId: string;
-  selectedAnswer: number;
+  selectedAnswers: number[]; // Changed to support multiple selections
   isCorrect: boolean;
+  partialCredit?: number; // For partial scoring with multiple correct answers
 }
 
 export interface QuizResult {

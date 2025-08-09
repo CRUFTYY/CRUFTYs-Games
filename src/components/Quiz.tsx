@@ -9,7 +9,7 @@ export const Quiz: React.FC = () => {
   const { state } = useAuth();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<QuizAnswer[]>([]);
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [startTime, setStartTime] = useState(Date.now());
   const [timeSpent, setTimeSpent] = useState(0);
@@ -87,19 +87,57 @@ export const Quiz: React.FC = () => {
   }
 
   const handleAnswerSelect = (answerIndex: number) => {
-    setSelectedAnswer(answerIndex);
+    const currentQ = questions[currentQuestion];
+    const isMultipleChoice = currentQ.correctAnswers.length > 1;
+    
+    if (isMultipleChoice) {
+      setSelectedAnswers(prev => 
+        prev.includes(answerIndex) 
+          ? prev.filter(i => i !== answerIndex)
+          : [...prev, answerIndex]
+      );
+    } else {
+      setSelectedAnswers([answerIndex]);
+    }
   };
 
   const handleNextQuestion = () => {
-    if (selectedAnswer === null) return;
+    if (selectedAnswers.length === 0) return;
 
     const question = questions[currentQuestion];
-    const isCorrect = selectedAnswer === question.correctAnswer;
+    
+    // Calculate if answer is correct for multiple choice questions
+    let isCorrect = false;
+    let partialCredit = 0;
+    
+    if (question.correctAnswers.length === 1) {
+      // Single correct answer
+      isCorrect = selectedAnswers.length === 1 && selectedAnswers[0] === question.correctAnswers[0];
+      partialCredit = isCorrect ? 1 : 0;
+    } else {
+      // Multiple correct answers
+      const correctSet = new Set(question.correctAnswers);
+      const selectedSet = new Set(selectedAnswers);
+      
+      // Check if all selected answers are correct and all correct answers are selected
+      const correctSelected = selectedAnswers.filter(ans => correctSet.has(ans)).length;
+      const incorrectSelected = selectedAnswers.filter(ans => !correctSet.has(ans)).length;
+      
+      if (incorrectSelected === 0 && correctSelected === question.correctAnswers.length) {
+        isCorrect = true;
+        partialCredit = 1;
+      } else if (correctSelected > 0 && incorrectSelected === 0) {
+        // Partial credit for partially correct answers
+        partialCredit = correctSelected / question.correctAnswers.length;
+        isCorrect = partialCredit >= 0.5; // Consider correct if at least 50% right
+      }
+    }
 
     const newAnswer: QuizAnswer = {
       questionId: question.id,
-      selectedAnswer,
+      selectedAnswers: [...selectedAnswers],
       isCorrect,
+      partialCredit,
     };
 
     const updatedAnswers = [...answers, newAnswer];
@@ -107,15 +145,17 @@ export const Quiz: React.FC = () => {
 
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
-      setSelectedAnswer(null);
+      setSelectedAnswers([]);
     } else {
       // Quiz completed
+      const totalScore = updatedAnswers.reduce((sum, answer) => sum + (answer.partialCredit || 0), 0);
+      
       const finalResult: QuizResult = {
         id: Date.now().toString(),
         userEmail: state.user!.email,
         userName: state.user!.name,
         answers: updatedAnswers,
-        score: updatedAnswers.filter(answer => answer.isCorrect).length,
+        score: Math.round(totalScore * 10) / 10, // Round to 1 decimal
         totalQuestions: questions.length,
         completedAt: new Date(),
         timeSpent,
@@ -129,6 +169,7 @@ export const Quiz: React.FC = () => {
 
   const currentQ = questions[currentQuestion];
   const progress = ((currentQuestion + 1) / questions.length) * 100;
+  const isMultipleChoice = currentQ.correctAnswers.length > 1;
 
   return (
     <div className="min-h-screen py-8 px-4">
@@ -167,18 +208,18 @@ export const Quiz: React.FC = () => {
                 key={index}
                 onClick={() => handleAnswerSelect(index)}
                 className={`w-full p-4 text-left rounded-lg border-2 transition-all duration-200 hover:shadow-md ${
-                  selectedAnswer === index
+                  selectedAnswers.includes(index)
                     ? 'border-blue-500 bg-blue-50 text-blue-900'
                     : 'border-slate-200 hover:border-slate-300'
                 }`}
               >
                 <div className="flex items-center space-x-3">
-                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                    selectedAnswer === index
+                  <div className={`w-5 h-5 ${isMultipleChoice ? 'rounded' : 'rounded-full'} border-2 flex items-center justify-center ${
+                    selectedAnswers.includes(index)
                       ? 'border-blue-500 bg-blue-500'
                       : 'border-slate-300'
                   }`}>
-                    {selectedAnswer === index && (
+                    {selectedAnswers.includes(index) && (
                       <CheckCircle className="h-3 w-3 text-white" />
                     )}
                   </div>
@@ -191,7 +232,7 @@ export const Quiz: React.FC = () => {
           <div className="mt-8 flex justify-end">
             <button
               onClick={handleNextQuestion}
-              disabled={selectedAnswer === null}
+              disabled={selectedAnswers.length === 0}
               className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {currentQuestion < questions.length - 1 ? 'Siguiente pregunta' : 'Finalizar cuestionario'}
