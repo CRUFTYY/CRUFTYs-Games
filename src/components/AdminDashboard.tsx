@@ -86,7 +86,7 @@ export const AdminDashboard: React.FC = () => {
     setQuestionForm({
       question: question.question,
       options: [...question.options],
-      correctAnswers: [...question.correctAnswers],
+      correctAnswers: Array.isArray(question.correctAnswers) ? [...question.correctAnswers] : [],
       category: question.category || 'Personal'
     });
     setShowQuestionForm(true);
