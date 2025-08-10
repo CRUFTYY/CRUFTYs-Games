@@ -161,10 +161,19 @@ export const getQuizConfig = (): QuizConfig => {
   const stored = localStorage.getItem('quizConfig');
   if (stored) {
     const config = JSON.parse(stored);
+    
+    // Validate and fix dates
+    const startDate = new Date(config.startDate);
+    const endDate = new Date(config.endDate);
+    
+    // If dates are invalid, use defaults
+    const validStartDate = isNaN(startDate.getTime()) ? new Date('2025-01-01T09:00:00') : startDate;
+    const validEndDate = isNaN(endDate.getTime()) ? new Date('2025-12-31T23:59:59') : endDate;
+    
     return {
       ...config,
-      startDate: new Date(config.startDate),
-      endDate: new Date(config.endDate),
+      startDate: validStartDate,
+      endDate: validEndDate,
       questions: config.questions.map((q: any) => ({
         ...q,
         correctAnswers: Array.isArray(q.correctAnswers) ? q.correctAnswers : []
