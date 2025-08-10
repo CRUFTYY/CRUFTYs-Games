@@ -39,6 +39,23 @@ export const CodeVerification: React.FC = () => {
     }
   };
 
+  const handlePaste = (e: React.ClipboardEvent) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData('text/plain').trim();
+    
+    // Si el texto pegado tiene 6 caracteres, distribuirlo en los campos
+    if (/^\d{6}$/.test(pastedData)) {
+      const newCode = pastedData.split('');
+      setCode(newCode);
+      
+      // Enfocar el último campo
+      inputRefs.current[5]?.focus();
+      
+      // Verificar el código automáticamente
+      handleVerification(pastedData);
+    }
+  };
+
   const handleVerification = async (verificationCode: string) => {
     setIsLoading(true);
     setError('');
@@ -109,6 +126,7 @@ export const CodeVerification: React.FC = () => {
                   value={digit}
                   onChange={(e) => handleInputChange(index, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(index, e)}
+                  onPaste={index === 0 ? handlePaste : undefined}
                   className="w-12 h-12 text-center text-xl font-bold border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
                   disabled={isLoading}
                 />
@@ -136,13 +154,19 @@ export const CodeVerification: React.FC = () => {
               className="w-full flex items-center justify-center space-x-2 text-slate-600 hover:text-slate-800 py-2 transition-colors duration-200"
             >
               <ArrowLeft className="h-4 w-4" />
-              <span>Cambiar Gmail/volver a ingresar</span>
+              <span>Cambiar dirección de correo</span>
             </button>
           </div>
 
           <div className="mt-8 text-center">
             <p className="text-xs text-slate-500">
-              Tenés que poner el código que te mostré antes, sino lo viste, volvé a ingresar
+              Revisa tu bandeja de entrada y carpeta de spam
+            </p>
+            <p className="text-xs text-slate-500 mt-2">
+              <span className="flex items-center justify-center gap-1">
+                <Clipboard className="h-3 w-3" />
+                Puedes copiar y pegar el código completo
+              </span>
             </p>
           </div>
         </div>
