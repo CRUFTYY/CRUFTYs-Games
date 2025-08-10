@@ -165,6 +165,10 @@ export const getQuizConfig = (): QuizConfig => {
       ...config,
       startDate: new Date(config.startDate),
       endDate: new Date(config.endDate),
+      questions: config.questions.map((q: any) => ({
+        ...q,
+        correctAnswers: Array.isArray(q.correctAnswers) ? q.correctAnswers : []
+      }))
     };
   }
   
