@@ -607,7 +607,6 @@ export const AdminDashboard: React.FC = () => {
                   </thead>
                   <tbody className="bg-white divide-y divide-slate-200">
                     {stats.userStats.map((user, index) => {
-                      const result = stats.userStats.find(u => u.userEmail === user.userEmail);
                       return (
                         <tr key={index} className="hover:bg-slate-50">
                           <td className="px-6 py-4 whitespace-nowrap">
