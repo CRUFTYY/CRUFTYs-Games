@@ -30,6 +30,7 @@ export const AdminDashboard: React.FC = () => {
   const [deletionCode, setDeletionCode] = useState('');
   const [expectedDeletionCode, setExpectedDeletionCode] = useState('');
   const [showDeletionConfirm, setShowDeletionConfirm] = useState(false);
+  const [showDeletionCode, setShowDeletionCode] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<{type: 'question' | 'result' | 'all-results', id?: string} | null>(null);
 
   useEffect(() => {
@@ -145,15 +146,11 @@ export const AdminDashboard: React.FC = () => {
     setExpectedDeletionCode(code);
     setDeletionCode('');
     setItemToDelete({ type, id });
-    setShowDeletionConfirm(true);
-    
-    // Show the code to the admin
-    alert(`Código de confirmación: ${code}\nIngresa este código para confirmar la eliminación.`);
+    setShowDeletionCode(true);
   };
 
   const confirmDeletion = () => {
     if (deletionCode !== expectedDeletionCode) {
-      alert('Código de confirmación incorrecto');
       return;
     }
 
@@ -176,6 +173,7 @@ export const AdminDashboard: React.FC = () => {
     }
 
     // Reset state
+    setShowDeletionCode(false);
     setShowDeletionConfirm(false);
     setItemToDelete(null);
     setDeletionCode('');
@@ -184,8 +182,19 @@ export const AdminDashboard: React.FC = () => {
     // Update stats
     setStats(calculateQuizStats());
     setQuizConfig(getQuizConfig());
-    
-    alert('Eliminación completada exitosamente');
+  };
+
+  const proceedToConfirmation = () => {
+    setShowDeletionCode(false);
+    setShowDeletionConfirm(true);
+  };
+
+  const cancelDeletion = () => {
+    setShowDeletionCode(false);
+    setShowDeletionConfirm(false);
+    setItemToDelete(null);
+    setDeletionCode('');
+    setExpectedDeletionCode('');
   };
 
   const handleOptionChange = (index: number, value: string) => {
@@ -827,6 +836,51 @@ export const AdminDashboard: React.FC = () => {
           </div>
         )}
 
+        {/* Deletion Code Display Modal */}
+        {showDeletionCode && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+              <div className="px-6 py-4 border-b border-slate-200">
+                <div className="flex items-center space-x-3">
+                  <AlertTriangle className="h-6 w-6 text-yellow-600" />
+                  <h3 className="text-lg font-medium text-slate-900">Código de Confirmación</h3>
+                </div>
+              </div>
+              
+              <div className="p-6">
+                <p className="text-slate-600 mb-4">
+                  Para confirmar la eliminación, usa este código de confirmación:
+                </p>
+                
+                <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-4 text-center mb-4">
+                  <span className="text-2xl font-bold text-yellow-800 tracking-wider font-mono">
+                    {expectedDeletionCode}
+                  </span>
+                </div>
+                
+                <p className="text-sm text-slate-500 mb-6">
+                  Copia este código y úsalo en la siguiente pantalla para confirmar la eliminación.
+                </p>
+                
+                <div className="flex justify-end space-x-3">
+                  <button
+                    onClick={cancelDeletion}
+                    className="px-4 py-2 text-slate-700 bg-slate-100 rounded-md hover:bg-slate-200 transition-colors duration-200"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={proceedToConfirmation}
+                    className="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-colors duration-200"
+                  >
+                    Continuar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Deletion Confirmation Modal */}
         {showDeletionConfirm && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -852,15 +906,22 @@ export const AdminDashboard: React.FC = () => {
                   maxLength={6}
                 />
                 
+                {deletionCode && deletionCode !== expectedDeletionCode && (
+                  <p className="text-red-600 text-sm mt-2">
+                    Código incorrecto. Inténtalo de nuevo.
+                  </p>
+                )}
+                
                 <div className="flex justify-end space-x-3 mt-6">
                   <button
-                    onClick={() => setShowDeletionConfirm(false)}
+                    onClick={cancelDeletion}
                     className="px-4 py-2 text-slate-700 bg-slate-100 rounded-md hover:bg-slate-200 transition-colors duration-200"
                   >
                     Cancelar
                   </button>
                   <button
                     onClick={confirmDeletion}
+                    disabled={!deletionCode || deletionCode !== expectedDeletionCode}
                     className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors duration-200"
                   >
                     Confirmar Eliminación
