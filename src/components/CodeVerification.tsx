@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Shield, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Shield, AlertCircle, ArrowLeft, Clipboard } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { verifyCode } from '../utils/auth';
 
