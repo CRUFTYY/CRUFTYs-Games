@@ -5,13 +5,15 @@ type AuthAction =
   | { type: 'SET_PENDING_EMAIL'; payload: string }
   | { type: 'SET_VERIFICATION_STEP'; payload: 'email' | 'code' | 'name' | 'complete' }
   | { type: 'SET_USER'; payload: User }
-  | { type: 'LOGOUT' };
+  | { type: 'LOGOUT' }
+  | { type: 'TOGGLE_DARK_MODE' };
 
 const initialState: AuthState = {
   user: null,
   isAuthenticated: false,
   verificationStep: 'email',
   pendingEmail: '',
+  isDarkMode: localStorage.getItem('darkMode') === 'true',
 };
 
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
@@ -29,6 +31,10 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
       };
     case 'LOGOUT':
       return { ...initialState };
+    case 'TOGGLE_DARK_MODE':
+      const newDarkMode = !state.isDarkMode;
+      localStorage.setItem('darkMode', newDarkMode.toString());
+      return { ...state, isDarkMode: newDarkMode };
     default:
       return state;
   }

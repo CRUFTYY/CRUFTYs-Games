@@ -45,4 +45,5 @@ export interface AuthState {
   isAuthenticated: boolean;
   verificationStep: 'email' | 'code' | 'name' | 'complete';
   pendingEmail: string;
+  isDarkMode: boolean;
 }
