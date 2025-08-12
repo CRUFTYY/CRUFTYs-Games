@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart3, Users, Trophy, Clock, TrendingUp, Calendar, Settings, Plus, Edit, Trash2, Save, X, AlertTriangle, ArrowUpDown } from 'lucide-react';
-import { calculateQuizStats, getQuizConfig, saveQuizConfig, addQuestion, updateQuestion, deleteQuestion, generateDeletionCode, deleteQuizResult, deleteAllQuizResults } from '../utils/quiz';
+import { BarChart3, Users, Trophy, Clock, TrendingUp, Calendar, Settings, Plus, Edit, Trash2, Save, X, AlertTriangle, ArrowUpDown, Eye, CheckCircle, XCircle } from 'lucide-react';
+import { calculateQuizStats, getQuizConfig, saveQuizConfig, addQuestion, updateQuestion, deleteQuestion, generateDeletionCode, deleteQuizResult, deleteAllQuizResults, getQuizResults } from '../utils/quiz';
 import { getUsers } from '../utils/auth';
 import { useAuth } from '../context/AuthContext';
 import { QuizQuestion } from '../types';
@@ -39,6 +39,8 @@ export const AdminDashboard: React.FC = () => {
   const [showDeletionConfirm, setShowDeletionConfirm] = useState(false);
   const [showDeletionCode, setShowDeletionCode] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<{type: 'question' | 'result' | 'all-results', id?: string} | null>(null);
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [showUserDetails, setShowUserDetails] = useState(false);
 
   useEffect(() => {
     const updateStats = () => {
@@ -292,6 +294,23 @@ export const AdminDashboard: React.FC = () => {
     });
   };
 
+  const handleViewUserDetails = (result: any) => {
+    const userDetails = {
+      ...result,
+      answers: result.answers.map((answer: any) => {
+        const question = quizConfig.questions.find(q => q.id === answer.questionId);
+        return {
+          ...answer,
+          question: question?.question || 'Pregunta no encontrada',
+          options: question?.options || [],
+          correctAnswers: question?.correctAnswers || []
+        };
+      })
+    };
+    setSelectedUser(userDetails);
+    setShowUserDetails(true);
+  };
+
   return (
     <div className={`min-h-screen py-8 transition-colors duration-200 ${
       state.isDarkMode ? 'bg-slate-900' : 'bg-slate-50'
@@ -423,7 +442,8 @@ export const AdminDashboard: React.FC = () => {
             </div>
 
             {/* Recent Results */}
-            {stats.userStats.length > 0 && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Recent Results */}
               <div className={`rounded-lg shadow transition-colors duration-200 ${
                 state.isDarkMode ? 'bg-slate-800' : 'bg-white'
               }`}>
@@ -434,105 +454,157 @@ export const AdminDashboard: React.FC = () => {
                     state.isDarkMode ? 'text-white' : 'text-slate-900'
                   }`}>Resultados Recientes</h3>
                 </div>
-                <div className="overflow-x-auto">
-                  <table className={`min-w-full divide-y transition-colors duration-200 ${
-                    state.isDarkMode ? 'divide-slate-700' : 'divide-slate-200'
-                  }`}>
-                    <thead className={`transition-colors duration-200 ${
-                      state.isDarkMode ? 'bg-slate-700' : 'bg-slate-50'
+                {stats.userStats.length > 0 ? (
+                  <div className="overflow-x-auto">
+                    <table className={`min-w-full divide-y transition-colors duration-200 ${
+                      state.isDarkMode ? 'divide-slate-700' : 'divide-slate-200'
                     }`}>
-                      <tr>
-                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-opacity-80 transition-colors duration-200 ${
-                          state.isDarkMode ? 'text-slate-300' : 'text-slate-500'
-                        }`} onClick={() => handleSort('name')}>
-                          <div className="flex items-center space-x-1">
-                            <span>Usuario</span>
-                            <ArrowUpDown className="h-3 w-3" />
-                          </div>
-                        </th>
-                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-opacity-80 transition-colors duration-200 ${
-                          state.isDarkMode ? 'text-slate-300' : 'text-slate-500'
-                        }`} onClick={() => handleSort('score')}>
-                          <div className="flex items-center space-x-1">
-                            <span>Puntuación</span>
-                            <ArrowUpDown className="h-3 w-3" />
-                          </div>
-                        </th>
-                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-opacity-80 transition-colors duration-200 ${
-                          state.isDarkMode ? 'text-slate-300' : 'text-slate-500'
-                        }`} onClick={() => handleSort('percentage')}>
-                          <div className="flex items-center space-x-1">
-                            <span>Porcentaje</span>
-                            <ArrowUpDown className="h-3 w-3" />
-                          </div>
-                        </th>
-                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-opacity-80 transition-colors duration-200 ${
-                          state.isDarkMode ? 'text-slate-300' : 'text-slate-500'
-                        }`} onClick={() => handleSort('time')}>
-                          <div className="flex items-center space-x-1">
-                            <span>Tiempo</span>
-                            <ArrowUpDown className="h-3 w-3" />
-                          </div>
-                        </th>
-                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider transition-colors duration-200 ${
-                          state.isDarkMode ? 'text-slate-300' : 'text-slate-500'
-                        }`}>
-                          Fecha
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className={`divide-y transition-colors duration-200 ${
-                      state.isDarkMode ? 'bg-slate-800 divide-slate-700' : 'bg-white divide-slate-200'
-                    }`}>
-                      {getSortedResults()
-                        .slice(0, 10)
-                        .map((user, index) => (
-                        <tr key={index} className={`transition-colors duration-200 ${
-                          state.isDarkMode ? 'hover:bg-slate-700' : 'hover:bg-slate-50'
-                        }`}>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div>
-                              <div className={`text-sm font-medium transition-colors duration-200 ${
-                                state.isDarkMode ? 'text-white' : 'text-slate-900'
-                              }`}>{user.userName}</div>
-                              <div className={`text-sm transition-colors duration-200 ${
-                                state.isDarkMode ? 'text-slate-400' : 'text-slate-500'
-                              }`}>{user.userEmail}</div>
+                      <thead className={`transition-colors duration-200 ${
+                        state.isDarkMode ? 'bg-slate-700' : 'bg-slate-50'
+                      }`}>
+                        <tr>
+                          <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-opacity-80 transition-colors duration-200 ${
+                            state.isDarkMode ? 'text-slate-300' : 'text-slate-500'
+                          }`} onClick={() => handleSort('name')}>
+                            <div className="flex items-center space-x-1">
+                              <span>Usuario</span>
+                              <ArrowUpDown className="h-3 w-3" />
                             </div>
-                          </td>
-                          <td className={`px-6 py-4 whitespace-nowrap text-sm transition-colors duration-200 ${
-                            state.isDarkMode ? 'text-white' : 'text-slate-900'
+                          </th>
+                          <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-opacity-80 transition-colors duration-200 ${
+                            state.isDarkMode ? 'text-slate-300' : 'text-slate-500'
+                          }`} onClick={() => handleSort('score')}>
+                            <div className="flex items-center space-x-1">
+                              <span>Puntuación</span>
+                              <ArrowUpDown className="h-3 w-3" />
+                            </div>
+                          </th>
+                          <th className={`px-6 py-3 text-center text-xs font-medium uppercase tracking-wider transition-colors duration-200 ${
+                            state.isDarkMode ? 'text-slate-300' : 'text-slate-500'
                           }`}>
-                            {user.score}/10
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                              user.percentage >= 80
-                                ? 'bg-green-100 text-green-800'
-                                : user.percentage >= 60
-                                ? 'bg-yellow-100 text-yellow-800'
-                                : 'bg-red-100 text-red-800'
-                            }`}>
-                              {user.percentage.toFixed(1)}%
-                            </span>
-                          </td>
-                          <td className={`px-6 py-4 whitespace-nowrap text-sm transition-colors duration-200 ${
-                            state.isDarkMode ? 'text-slate-400' : 'text-slate-500'
-                          }`}>
-                            {formatTime(user.timeSpent)}
-                          </td>
-                          <td className={`px-6 py-4 whitespace-nowrap text-sm transition-colors duration-200 ${
-                            state.isDarkMode ? 'text-slate-400' : 'text-slate-500'
-                          }`}>
-                            {formatDate(user.completedAt)}
-                          </td>
+                            Acciones
+                          </th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                      </thead>
+                      <tbody className={`divide-y transition-colors duration-200 ${
+                        state.isDarkMode ? 'bg-slate-800 divide-slate-700' : 'bg-white divide-slate-200'
+                      }`}>
+                        {getSortedResults()
+                          .slice(0, 10)
+                          .map((user, index) => {
+                            const fullResult = getQuizResults().find(r => r.userEmail === user.userEmail);
+                            return (
+                              <tr key={index} className={`transition-colors duration-200 ${
+                                state.isDarkMode ? 'hover:bg-slate-700' : 'hover:bg-slate-50'
+                              }`}>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <div>
+                                    <div className={`text-sm font-medium transition-colors duration-200 ${
+                                      state.isDarkMode ? 'text-white' : 'text-slate-900'
+                                    }`}>{user.userName}</div>
+                                    <div className={`text-sm transition-colors duration-200 ${
+                                      state.isDarkMode ? 'text-slate-400' : 'text-slate-500'
+                                    }`}>{user.userEmail}</div>
+                                  </div>
+                                </td>
+                                <td className={`px-6 py-4 whitespace-nowrap text-sm transition-colors duration-200 ${
+                                  state.isDarkMode ? 'text-white' : 'text-slate-900'
+                                }`}>
+                                  {user.score}/10 ({Math.round(user.percentage)}%)
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-center">
+                                  <button
+                                    onClick={() => handleViewUserDetails(fullResult)}
+                                    className={`inline-flex items-center px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                                      state.isDarkMode
+                                        ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                                        : 'bg-blue-100 hover:bg-blue-200 text-blue-700'
+                                    }`}
+                                  >
+                                    <Eye className="h-4 w-4 mr-1" />
+                                    Ver respuestas
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <p className={`text-center py-8 ${state.isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                    No hay resultados disponibles
+                  </p>
+                )}
               </div>
-            )}
+
+              {/* Active Users */}
+              <div className={`rounded-lg shadow transition-colors duration-200 ${
+                state.isDarkMode ? 'bg-slate-800' : 'bg-white'
+              }`}>
+                <div className={`px-6 py-4 border-b transition-colors duration-200 ${
+                  state.isDarkMode ? 'border-slate-700' : 'border-slate-200'
+                }`}>
+                  <h3 className={`text-lg font-medium transition-colors duration-200 ${
+                    state.isDarkMode ? 'text-white' : 'text-slate-900'
+                  }`}>Usuarios Registrados</h3>
+                </div>
+                {getUsers().length > 0 ? (
+                  <div className="p-6 space-y-3 max-h-96 overflow-y-auto">
+                    {getUsers().map((user, index) => (
+                      <div 
+                        key={index}
+                        className={`p-3 rounded-lg border transition-colors ${
+                          state.isDarkMode 
+                            ? 'border-slate-700 bg-slate-700/50' 
+                            : 'border-slate-200 bg-slate-50'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-3">
+                            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                              user.hasCompletedQuiz 
+                                ? 'bg-green-100 text-green-600' 
+                                : 'bg-yellow-100 text-yellow-600'
+                            }`}>
+                              {user.hasCompletedQuiz ? (
+                                <CheckCircle className="h-4 w-4" />
+                              ) : (
+                                <Clock className="h-4 w-4" />
+                              )}
+                            </div>
+                            <div>
+                              <div className={`font-medium ${state.isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+                                {user.name}
+                                {user.isAdmin && (
+                                  <span className="ml-2 text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
+                                    Admin
+                                  </span>
+                                )}
+                              </div>
+                              <div className={`text-sm ${state.isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                                {user.email}
+                              </div>
+                            </div>
+                          </div>
+                          <div className={`text-xs px-2 py-1 rounded-full ${
+                            user.hasCompletedQuiz 
+                              ? 'bg-green-100 text-green-700' 
+                              : 'bg-yellow-100 text-yellow-700'
+                          }`}>
+                            {user.hasCompletedQuiz ? 'Completado' : 'En progreso'}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className={`text-center py-8 ${state.isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                    No hay usuarios registrados
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
         )}
 
@@ -1265,6 +1337,129 @@ export const AdminDashboard: React.FC = () => {
                     Confirmar Eliminación
                   </button>
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* User Details Modal */}
+        {showUserDetails && selectedUser && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className={`max-w-4xl w-full max-h-[90vh] overflow-y-auto rounded-xl shadow-xl ${
+              state.isDarkMode ? 'bg-slate-800' : 'bg-white'
+            }`}>
+              <div className={`sticky top-0 p-6 border-b ${
+                state.isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-slate-200 bg-white'
+              }`}>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h3 className={`text-xl font-bold ${state.isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+                      Respuestas de {selectedUser.userName}
+                    </h3>
+                    <p className={`text-sm ${state.isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                      {selectedUser.userEmail} • Puntuación: {selectedUser.score}/{selectedUser.totalQuestions} • 
+                      Tiempo: {Math.floor(selectedUser.timeSpent / 60)}m {selectedUser.timeSpent % 60}s
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setShowUserDetails(false)}
+                    className={`p-2 rounded-lg transition-colors ${
+                      state.isDarkMode ? 'hover:bg-slate-700 text-slate-400' : 'hover:bg-slate-100 text-slate-500'
+                    }`}
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+              </div>
+              
+              <div className="p-6 space-y-6">
+                {selectedUser.answers.map((answer: any, index: number) => (
+                  <div 
+                    key={index}
+                    className={`p-4 rounded-lg border ${
+                      state.isDarkMode ? 'border-slate-700 bg-slate-700/50' : 'border-slate-200 bg-slate-50'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <h4 className={`font-medium ${state.isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+                        Pregunta {index + 1}: {answer.question}
+                      </h4>
+                      <div className={`flex items-center space-x-2 ${
+                        answer.isCorrect ? 'text-green-600' : 'text-red-600'
+                      }`}>
+                        {answer.isCorrect ? (
+                          <CheckCircle className="h-5 w-5" />
+                        ) : (
+                          <XCircle className="h-5 w-5" />
+                        )}
+                        <span className="text-sm font-medium">
+                          {answer.isCorrect ? 'Correcta' : 'Incorrecta'}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      {answer.options.map((option: string, optionIndex: number) => {
+                        const isSelected = answer.selectedAnswers.includes(optionIndex);
+                        const isCorrect = answer.correctAnswers.includes(optionIndex);
+                        
+                        return (
+                          <div 
+                            key={optionIndex}
+                            className={`p-3 rounded-lg border-2 ${
+                              isSelected && isCorrect
+                                ? 'border-green-500 bg-green-50 text-green-900'
+                                : isSelected && !isCorrect
+                                ? 'border-red-500 bg-red-50 text-red-900'
+                                : !isSelected && isCorrect
+                                ? 'border-green-300 bg-green-50 text-green-700'
+                                : state.isDarkMode
+                                ? 'border-slate-600 bg-slate-600/50 text-slate-300'
+                                : 'border-slate-200 bg-white text-slate-700'
+                            }`}
+                          >
+                            <div className="flex items-center space-x-3">
+                              <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                                isSelected
+                                  ? isCorrect
+                                    ? 'border-green-500 bg-green-500'
+                                    : 'border-red-500 bg-red-500'
+                                  : isCorrect
+                                  ? 'border-green-300 bg-green-100'
+                                  : 'border-slate-300'
+                              }`}>
+                                {(isSelected || isCorrect) && (
+                                  <div className="w-2 h-2 bg-white rounded-full"></div>
+                                )}
+                              </div>
+                              <span className="flex-1">{option}</span>
+                              {isSelected && (
+                                <span className="text-xs font-medium">
+                                  {isCorrect ? '✓ Seleccionada' : '✗ Seleccionada'}
+                                </span>
+                              )}
+                              {!isSelected && isCorrect && (
+                                <span className="text-xs font-medium text-green-600">
+                                  ✓ Respuesta correcta
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    
+                    {answer.partialCredit && answer.partialCredit < 1 && (
+                      <div className={`mt-3 p-2 rounded-lg ${
+                        state.isDarkMode ? 'bg-yellow-900/20 text-yellow-400' : 'bg-yellow-50 text-yellow-700'
+                      }`}>
+                        <span className="text-sm">
+                          Crédito parcial: {Math.round(answer.partialCredit * 100)}%
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           </div>
