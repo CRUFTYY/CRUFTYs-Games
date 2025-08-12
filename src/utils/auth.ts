@@ -16,12 +16,17 @@ const AUTHORIZED_EMAILS = [
 
 const ADMIN_EMAIL = 'eliasmateoet24@gmail.com';
 
+const ADMIN_EMAILS = [
+  'eliasmateoet24@gmail.com',
+  'eliasmateo1239@gmail.com'
+];
+
 export const isEmailAuthorized = (email: string): boolean => {
-  return AUTHORIZED_EMAILS.includes(email) || email === ADMIN_EMAIL;
+  return AUTHORIZED_EMAILS.includes(email) || ADMIN_EMAILS.includes(email);
 };
 
 export const isAdmin = (email: string): boolean => {
-  return email === ADMIN_EMAIL;
+  return ADMIN_EMAILS.includes(email);
 };
 
 export const generateVerificationCode = (): string => {
