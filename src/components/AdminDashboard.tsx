@@ -1186,7 +1186,7 @@ export const AdminDashboard: React.FC = () => {
                   <p className={`text-xs mt-2 transition-colors duration-200 ${
                     state.isDarkMode ? 'text-slate-400' : 'text-slate-500'
                   }`}>
-                    ✓ Marca las casillas para indicar las respuestas correctas. Debe haber al menos una respuesta correcta.
+                    ✓ Marcá las casillas para indicar las respuestas correctas. Debe haber al menos una respuesta correcta.
                   </p>
                 </div>
 
